@@ -1,0 +1,53 @@
+<!-- Title Centered at the Top Middle -->
+<h1 style="text-align: center;">Cash Management</h1>
+
+<!-- Left and Right Corner Alignment Row -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <span>Welcome, <strong>{{ request.user.username }}</strong>!</span>
+    <a href="{% url 'logout' %}" style="color: rgb(89, 201, 117); text-decoration: none; font-weight: bold;">Logout</a>
+</div>
+
+<hr>
+
+<h3>Financial Summary</h3>
+<p><strong>Total Incoming Cash:</strong> ৳  {{ total_cash }}</p>
+<p><strong>Total Expenses:</strong> ৳  {{ total_expense }}</p>
+<p><strong>Remaining Balance:</strong> ৳  {{ balance }}</p>
+
+<hr>
+
+<h3>Transaction Entry Forms</h3>
+<div style="display: flex; gap: 40px;">
+    <!-- Add Cash Form -->
+    <div style="flex: 1;">
+        <h4>Add Incoming Cash</h4>
+        <form action="{% url 'add_cash' %}" method="POST">
+            {% csrf_token %}
+            <label>Source:</label><br>
+            <input type="text" name="source" required style="width: 100%; max-width: 300px;"><br><br>
+            
+            <label>Amount:</label><br>
+            <input type="number" name="amount" required style="width: 100%; max-width: 300px;"><br><br>
+            
+            <label>Description:</label><br>
+            <textarea name="description" style="width: 100%; max-width: 300px; height: 60px;"></textarea><br><br>
+            
+            <button type="submit">Submit Cash Entry</button>
+        </form>
+    </div>
+
+    <!-- Add Expense Form -->
+    <div style="flex: 1;">
+        <h4>Add Outgoing Expense</h4>
+        <form action="{% url 'add_expense' %}" method="POST">
+            {% csrf_token %}
+            <label>Amount:</label><br>
+            <input type="number" name="amount" required style="width: 100%; max-width: 300px;"><br><br>
+            
+            <label>Description:</label><br>
+            <textarea name="description" required style="width: 100%; max-width: 300px; height: 60px;"></textarea><br><br>
+            
+            <button type="submit">Submit Expense Entry</button>
+        </form>
+    </div>
+</div>
