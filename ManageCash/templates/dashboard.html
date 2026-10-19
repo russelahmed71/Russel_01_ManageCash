@@ -1,53 +1,92 @@
-<!-- Title Centered at the Top Middle -->
-<h1 style="text-align: center;">Cash Management</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
 
-<!-- Left and Right Corner Alignment Row -->
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <span>Welcome, <strong>{{ request.user.username }}</strong>!</span>
-    <a href="{% url 'logout' %}" style="color: rgb(89, 201, 117); text-decoration: none; font-weight: bold;">Logout</a>
-</div>
-
-<hr>
-
-<h3>Financial Summary</h3>
-<p><strong>Total Incoming Cash:</strong> ৳  {{ total_cash }}</p>
-<p><strong>Total Expenses:</strong> ৳  {{ total_expense }}</p>
-<p><strong>Remaining Balance:</strong> ৳  {{ balance }}</p>
-
-<hr>
-
-<h3>Transaction Entry Forms</h3>
-<div style="display: flex; gap: 40px;">
-    <!-- Add Cash Form -->
-    <div style="flex: 1;">
-        <h4>Add Incoming Cash</h4>
-        <form action="{% url 'add_cash' %}" method="POST">
-            {% csrf_token %}
-            <label>Source:</label><br>
-            <input type="text" name="source" required style="width: 100%; max-width: 300px;"><br><br>
-            
-            <label>Amount:</label><br>
-            <input type="number" name="amount" required style="width: 100%; max-width: 300px;"><br><br>
-            
-            <label>Description:</label><br>
-            <textarea name="description" style="width: 100%; max-width: 300px; height: 60px;"></textarea><br><br>
-            
-            <button type="submit">Submit Cash Entry</button>
-        </form>
+    <!-- TOP HEADER -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        <h2>Financial Summary</h2>
+        <div>
+            <strong>Welcome, {{ request.user.username }}!</strong> | 
+            <a href="{% url 'logout' %}" style="color: red; text-decoration: none; font-weight: bold;">Logout</a>
+        </div>
     </div>
 
-    <!-- Add Expense Form -->
-    <div style="flex: 1;">
-        <h4>Add Outgoing Expense</h4>
-        <form action="{% url 'add_expense' %}" method="POST">
-            {% csrf_token %}
-            <label>Amount:</label><br>
-            <input type="number" name="amount" required style="width: 100%; max-width: 300px;"><br><br>
-            
-            <label>Description:</label><br>
-            <textarea name="description" required style="width: 100%; max-width: 300px; height: 60px;"></textarea><br><br>
-            
-            <button type="submit">Submit Expense Entry</button>
-        </form>
+    <!-- WALLET SUMMARY VALUES -->
+    <div style="margin: 20px 0; font-size: 18px;">
+        <p>Total Incoming Cash: <strong>৳ {{ total_cash }}{{ total_income }}</strong></p>
+        <p>Total Expenses: <strong>৳ {{ total_expense }}</strong></p>
+        <p>Remaining Balance: <strong style="color: green;">৳ {{ balance }}{{ net_balance }}</strong></p>
     </div>
-</div>
+
+    <hr>
+
+    <!-- QUICK ACTION BUTTONS -->
+    <h3>Quick Actions</h3>
+    <div style="margin-bottom: 30px;">
+        <a href="{% url 'add_cash' %}">
+            <button style="background-color: #1dd19b; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin-right: 15px;">
+                 Add Incoming Cash
+            </button>
+        </a>
+        <a href="{% url 'add_expense' %}">
+            <button style="background-color: #a8ad57; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">
+                Add Outgoing Expense
+            </button>
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- SIDE BY SIDE HISTORY LOGS -->
+    <h3>Transaction History Logs</h3>
+    <div style="display: flex; gap: 40px;">
+        
+        <!-- Income Records Left Column -->
+        <div style="flex: 1;">
+            <h4>Cash Inflows</h4>
+            <table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f2f2f2;">
+                    <th>Source</th>
+                    <th>Amount</th>
+                </tr>
+                {% for cash in incomes %}
+                <tr>
+                    <td>{{ cash.source }}</td>
+                    <td style="color: green; font-weight: bold;">+ ৳ {{ cash.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="color: gray; text-align: center;">No cash inputs recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Expense Records Right Column -->
+        <div style="flex: 1;">
+            <h4>Cash Outflows</h4>
+            <table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse;">
+                <tr style="background-color: #f2f2f2;">
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+                {% for exp in expenses %}
+                <tr>
+                    <td>{{ exp.description }}</td>
+                    <td style="color: red; font-weight: bold;">- ৳ {{ exp.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="color: gray; text-align: center;">No expenses recorded yet.</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>
